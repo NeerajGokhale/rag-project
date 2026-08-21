@@ -13,7 +13,8 @@ from pathlib import Path
 from src.config import Config, load_config
 from src.embeddings.base import EmbeddingProvider
 from src.embeddings.factory import get_embedding_provider
-from src.generation.llm import GenerationResult, LLMClient
+from src.generation.factory import get_llm_client
+from src.generation.llm import GenerationResult
 from src.ingestion.chunker import Chunk, chunk_documents
 from src.ingestion.loaders import Document, load_directory
 from src.retrieval.chroma_store import ChromaVectorStore
@@ -49,7 +50,7 @@ class RAGPipeline:
         config: Config | None = None,
         embedding_provider: EmbeddingProvider | None = None,
         vector_store: VectorStore | None = None,
-        llm_client: LLMClient | None = None,
+        llm_client=None,
     ) -> None:
         self._config = config or load_config()
 
@@ -61,11 +62,7 @@ class RAGPipeline:
             persist_dir=self._config.vector_store.persist_dir,
             collection_name=self._config.vector_store.collection_name,
         )
-        self._llm_client = llm_client or LLMClient(
-            model=self._config.generation.model,
-            temperature=self._config.generation.temperature,
-            max_tokens=self._config.generation.max_tokens,
-        )
+        self._llm_client = llm_client or get_llm_client(self._config.generation)
         self._retriever = Retriever(
             embedding_provider=self._embedding_provider,
             vector_store=self._vector_store,

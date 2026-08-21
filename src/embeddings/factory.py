@@ -26,8 +26,12 @@ def get_embedding_provider(config: EmbeddingsConfig) -> EmbeddingProvider:
         from src.embeddings.openai_embeddings import OpenAIEmbeddingProvider
 
         return OpenAIEmbeddingProvider(model=config.model)
+    elif config.provider == "local":
+        from src.embeddings.local_embeddings import LocalEmbeddingProvider
+
+        return LocalEmbeddingProvider(model=config.model)
     else:
         raise ValueError(
             f"Unknown embedding provider '{config.provider}'. "
-            f"Supported providers: openai"
+            f"Supported providers: openai, local"
         )
