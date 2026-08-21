@@ -1,0 +1,26 @@
+# RAG Pipeline Configuration
+# All tunable parameters are centralized here.
+
+chunking:
+  chunk_size: 512       # max tokens per chunk
+  overlap: 50           # overlapping tokens between consecutive chunks
+
+embeddings:
+  provider: "openai"
+  model: "text-embedding-3-small"
+  dimension: 1536
+
+retrieval:
+  top_k: 5
+  score_threshold: 0.5  # cosine similarity — drop results below this
+
+generation:
+  provider: "openai"
+  model: "gpt-4o-mini"
+  temperature: 0.2
+  max_tokens: 1024
+
+vector_store:
+  provider: "chroma"
+  persist_dir: "data/processed/chroma_db"
+  collection_name: "rag_documents"

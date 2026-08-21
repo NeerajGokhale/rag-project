@@ -1,0 +1,25 @@
+Retrieval-Augmented Generation (RAG) is a technique that enhances large language model (LLM) responses by retrieving relevant information from an external knowledge base before generating an answer. Instead of relying solely on the model's training data, RAG first searches a document store to find passages related to the user's query, then provides those passages as context to the LLM.
+
+The RAG pipeline typically consists of several stages:
+
+1. Document Ingestion: Raw documents (PDFs, text files, web pages) are loaded and cleaned. The text is normalized to remove formatting artifacts while preserving the semantic content.
+
+2. Chunking: Cleaned documents are split into smaller, overlapping chunks. This is necessary because embedding models have token limits, and smaller chunks lead to more precise retrieval. A typical configuration uses 512-token chunks with 50-token overlap to maintain context across boundaries.
+
+3. Embedding: Each chunk is converted into a dense vector representation using an embedding model such as OpenAI's text-embedding-3-small or open-source alternatives like sentence-transformers. These vectors capture the semantic meaning of the text.
+
+4. Indexing: The embedding vectors along with their corresponding text and metadata are stored in a vector database such as ChromaDB, Pinecone, or Weaviate. The vector database enables efficient similarity search over millions of chunks.
+
+5. Retrieval: When a user asks a question, the query is embedded using the same model, and the vector database returns the top-k most similar chunks. A similarity threshold (e.g., cosine similarity >= 0.5) filters out irrelevant results.
+
+6. Generation: The retrieved chunks are injected into a carefully designed prompt template along with the user's question. The LLM then generates a grounded answer, citing the sources it used.
+
+Key advantages of RAG over fine-tuning include:
+- Reduced hallucination, since answers are grounded in retrieved evidence
+- Easy knowledge updates without retraining the model
+- Source attribution and verifiability
+- Lower cost compared to fine-tuning large models
+
+Common challenges include chunk size optimization, handling multi-hop reasoning where the answer spans multiple documents, managing embedding quality for domain-specific content, and ensuring retrieval precision at scale.
+
+RAG systems can be evaluated using metrics such as retrieval recall (did we find the right chunks?), answer faithfulness (is the answer supported by the context?), and answer relevance (does the answer address the question?).
