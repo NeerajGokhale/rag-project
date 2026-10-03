@@ -12,7 +12,7 @@ embeddings:
 
 retrieval:
   top_k: 5
-  score_threshold: 0.5  # cosine similarity — drop results below this
+  score_threshold: 0.2  # cosine similarity — drop results below this
 
 generation:
   provider: "local"       # "local" (Ollama, free) or "openai" (requires API key)
